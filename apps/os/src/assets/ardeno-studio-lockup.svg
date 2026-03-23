@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 220" role="img" aria-labelledby="ardenoTitle ardenoDesc">
+  <title id="ardenoTitle">Ardeno Studio</title>
+  <desc id="ardenoDesc">Ardeno Studio full logo lockup with orange Ardeno mark and white wordmark.</desc>
+  <path fill="#FF4F00" d="M166.455 160.32 116.93 60.712c-14.58 13.037-27.411 35.917-26.695 54.668l14.985 29.55a6.024 6.024 0 0 0 2.569 2.295l52.776 19.63c4.019 1.496 7.797-2.7 5.888-6.535ZM77.589 105.652a7.11 7.11 0 0 0-.877 1.593l-18.8 38.101a5.976 5.976 0 0 1-2.646 2.937l-53.727 19.988c-3.996 1.488-7.763-2.656-5.908-6.49L74.663 6.047c1.713-3.541 6.747-3.57 8.497-.048l30.761 61.897c-16.867 12.048-30.076 28.893-37.332 48.756" transform="translate(18 26) scale(1.1)"/>
+  <rect x="228" y="28" width="4" height="164" rx="2" fill="#F3F4F6" opacity=".9"/>
+  <text x="286" y="98" fill="#F8FAFC" font-family="Clash Display, Satoshi, Arial, sans-serif" font-size="74" font-weight="500" letter-spacing="4">ARDENO</text>
+  <text x="286" y="176" fill="#F8FAFC" font-family="Clash Display, Satoshi, Arial, sans-serif" font-size="96" font-weight="700" letter-spacing="1">STUDIO</text>
+</svg>
