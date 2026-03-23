@@ -3,7 +3,7 @@ import { AGENTS } from "@/lib/agents";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, Sparkles, Orbit, Activity, Brain } from "lucide-react";
+import { ArrowRight, Sparkles, Orbit, Activity } from "lucide-react";
 import { PageTransition, FadeChild } from "@/components/MotionPrimitives";
 import { ArdenoMark } from "@/components/brand/ArdenoBrand";
 import { Button } from "@/components/ui/button";
@@ -165,29 +165,9 @@ export default function Index() {
 
       <FadeChild className="mb-6">
         <SectionLabel>Tasks & Intelligence</SectionLabel>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <UpcomingTasks />
           <DailyBriefing />
-          <div 
-            className="ardeno-panel ambient-glow p-6 flex flex-col justify-between cursor-pointer hover:bg-white/[0.04] transition-all group"
-            onClick={() => window.location.href = "/prediction"}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="brand-chip bg-primary/10 text-primary border-primary/20">
-                <Brain className="h-3.5 w-3.5" />
-                MiroFish Swarm
-              </span>
-              <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
-                <ArrowRight className="h-4 w-4" />
-              </div>
-            </div>
-            <div>
-              <h3 className="font-display text-xl font-semibold mb-2 text-foreground">Prediction Engine</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Rehearse the future among millions of digital agents. Upload seeds and deduce outcomes instantly.
-              </p>
-            </div>
-          </div>
         </div>
       </FadeChild>
 

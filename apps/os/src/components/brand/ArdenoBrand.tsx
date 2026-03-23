@@ -7,7 +7,7 @@ export function ArdenoMark({ className, glow = false }: { className?: string; gl
     <div
       className={cn(
         "relative inline-flex items-center justify-center rounded-[16px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))] shadow-[0_20px_48px_-26px_rgba(0,0,0,0.9)]",
-        glow && "before:absolute before:inset-[-10px] before:-z-10 before:rounded-[22px] before:bg-[radial-gradient(circle,rgba(232,32,32,0.28)_0%,rgba(232,32,32,0.08)_40%,transparent_72%)]",
+        glow && "before:absolute before:inset-[-10px] before:-z-10 before:rounded-[22px] before:bg-[radial-gradient(circle,rgba(255,79,0,0.28)_0%,rgba(255,79,0,0.08)_40%,transparent_72%)]",
         className,
       )}
     >

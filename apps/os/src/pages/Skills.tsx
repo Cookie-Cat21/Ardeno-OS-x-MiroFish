@@ -1,6 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from "react";
-const SkillsRegistryPage = lazy(() => import("./SkillsRegistry"));
-const SkillsUsagePage    = lazy(() => import("./SkillsUsage"));
+import { useState, useMemo } from "react";
 import {
   Wrench, Search, UserPlus, ListTodo, TrendingUp, Mail, FileText, Send, Globe, Target,
   Pen, Calendar, BarChart3, FileBarChart, FolderPlus, Receipt, Users, Zap, Bot,
@@ -39,7 +37,6 @@ const ICON_MAP: Record<string, any> = {
 const ALL_CATEGORIES: SkillCategory[] = ["data", "communication", "research", "content", "analysis", "automation"];
 
 export default function Skills() {
-  const [skillsTab, setSkillsTab] = useState<"agent" | "registry" | "usage">("agent");
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<"all" | SkillCategory>("all");
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -115,42 +112,6 @@ export default function Skills() {
 
   return (
     <motion.div initial="hidden" animate="show" variants={pageVariants} className="page-shell page-atmosphere max-w-7xl space-y-6">
-      {/* ── Top-level tab switcher ── */}
-      <motion.div variants={sectionReveal} className="flex items-center gap-1 rounded-[18px] border border-white/[0.08] bg-white/[0.03] p-1 w-fit">
-        {([
-          ["agent",    "Agent Skills"],
-          ["registry", "DB Registry"],
-          ["usage",    "Usage Analytics"],
-        ] as const).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setSkillsTab(key)}
-            className={`rounded-[14px] px-4 py-2 text-[13px] font-medium transition-all ${
-              skillsTab === key
-                ? "bg-primary/12 border border-primary/20 text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </motion.div>
-
-      {/* ── Non-agent tabs ── */}
-      {skillsTab === "registry" && (
-        <Suspense fallback={<div className="h-40 rounded-xl shimmer" />}>
-          <SkillsRegistryPage />
-        </Suspense>
-      )}
-      {skillsTab === "usage" && (
-        <Suspense fallback={<div className="h-40 rounded-xl shimmer" />}>
-          <SkillsUsagePage />
-        </Suspense>
-      )}
-
-      {/* ── Agent Skills tab ── */}
-      {skillsTab === "agent" && <>
-
       {/* Header */}
       <motion.div variants={sectionReveal}>
         <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
@@ -571,8 +532,6 @@ export default function Skills() {
         </CollapsibleContent>
       </Collapsible>
       </motion.div>
-
-      </> /* end skillsTab === "agent" */}
     </motion.div>
   );
 }

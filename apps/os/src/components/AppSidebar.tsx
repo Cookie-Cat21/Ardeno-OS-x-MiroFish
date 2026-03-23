@@ -21,9 +21,6 @@ import {
   Users,
   GitBranch,
   Wrench,
-  MessageCircle,
-  ShieldAlert,
-  ScrollText,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -62,7 +59,6 @@ const navGroups = [
       { title: "Agent Manager", url: "/agents", icon: Users },
       { title: "Orchestrator", url: "/orchestrate", icon: Zap },
       { title: "Skills", url: "/skills", icon: Wrench },
-      { title: "Security", url: "/security", icon: ShieldAlert },
       { title: "Analyzer", url: "/analyzer", icon: Globe },
       { title: "Site Builder", url: "/website-builder", icon: PanelsTopLeft },
     ],
@@ -84,14 +80,12 @@ const navGroups = [
       { title: "Projects", url: "/projects", icon: FolderKanban },
       { title: "Tasks", url: "/tasks", icon: ListTodo },
       { title: "Gmail", url: "/gmail", icon: Mail },
-      { title: "Telegram", url: "/telegram", icon: MessageCircle },
       { title: "Assets", url: "/assets", icon: FolderOpen },
     ],
   },
   {
     label: "SYSTEM",
     items: [
-      { title: "Activity Log", url: "/activity", icon: ScrollText },
       { title: "Settings", url: "/settings", icon: Settings },
     ],
   },

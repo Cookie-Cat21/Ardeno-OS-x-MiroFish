@@ -1,0 +1,40 @@
+project_id = "jmscslmfgfoteqnejtsl"
+
+[functions.orchestrate]
+verify_jwt = false
+
+[functions.website-audit]
+verify_jwt = false
+
+[functions.intelligence]
+verify_jwt = false
+
+[functions.process-intake]
+verify_jwt = false
+
+[functions.run-automations]
+verify_jwt = false
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.lead-generator]
+verify_jwt = false
+
+[functions.lead-nurturing]
+verify_jwt = false
+
+[functions.email-tracking-webhook]
+verify_jwt = false
+
+[functions.agent-chat]
+verify_jwt = false
+
+[functions.build-website]
+verify_jwt = false
+
+[functions.improve-website]
+verify_jwt = false
+
+[functions.openrouter-chat]
+verify_jwt = false

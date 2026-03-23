@@ -1,0 +1,2 @@
+ALTER TABLE public.dashboard_layouts 
+ALTER COLUMN widget_order SET DEFAULT '["briefing", "metrics", "goals", "revenue", "pipeline", "clientHealth", "agentPerformance", "tasks", "quickActions", "agents", "activity"]'::jsonb;

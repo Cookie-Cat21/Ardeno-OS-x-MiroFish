@@ -1,14 +1,12 @@
-import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppLayout } from "@/components/AppLayout";
 import { MotionConfig } from "framer-motion";
-import { AppLoader } from "@/components/loaders/AppLoader";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
 import AgentChat from "./pages/AgentChat";
@@ -32,25 +30,19 @@ import Nurturing from "./pages/Nurturing";
 import Skills from "./pages/Skills";
 import WebsiteBuilder from "./pages/WebsiteBuilder";
 import AgentManager from "./pages/AgentManager";
-import TelegramPage from "./pages/TelegramPage";
-import SecurityOverviewPage from "./pages/SecurityOverview";
-import ActivityLogPage from "./pages/ActivityLog";
 import NotFound from "./pages/NotFound";
-import LoaderPreview from "./pages/LoaderPreview";
-import PredictionEngine from "./pages/PredictionEngine";
 
 const queryClient = new QueryClient();
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { user, loading, isLocalDevBypass } = useAuth();
-  // Track whether the intro animation has finished playing
-  const [animDone, setAnimDone] = useState(false);
 
-  // Show the branded loader until BOTH auth has resolved AND the animation
-  // has completed — whichever takes longer wins, giving auth time to warm up
-  // while the client intro plays out.
-  if (loading || !animDone) {
-    return <AppLoader onComplete={() => setAnimDone(true)} />;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-pulse text-primary text-sm">Loading...</div>
+      </div>
+    );
   }
 
   if (isLocalDevBypass) return <>{children}</>;
@@ -70,7 +62,6 @@ const App = () => (
               <Routes>
                 <Route path="/intake" element={<ClientIntake />} />
                 <Route path="/status" element={<ProjectStatus />} />
-                <Route path="/loader-preview" element={<LoaderPreview />} />
                 <Route path="/*" element={
                   <AuthGate>
                     <Routes>
@@ -94,17 +85,7 @@ const App = () => (
                         <Route path="/skills" element={<Skills />} />
                         <Route path="/website-builder" element={<WebsiteBuilder />} />
                         <Route path="/agents" element={<AgentManager />} />
-                        <Route path="/telegram" element={<TelegramPage />} />
-                        <Route path="/security" element={<SecurityOverviewPage />} />
-                        <Route path="/activity" element={<ActivityLogPage />} />
-                        <Route path="/prediction" element={<PredictionEngine />} />
                         <Route path="/settings" element={<SettingsPage />} />
-                        {/* Redirect aliases for legacy / bookmarked URLs */}
-                        <Route path="/orchestrator" element={<Navigate to="/orchestrate" replace />} />
-                        <Route path="/agent-manager" element={<Navigate to="/agents" replace />} />
-                        <Route path="/website_builder" element={<Navigate to="/website-builder" replace />} />
-                        <Route path="/lead-engine" element={<Navigate to="/leads" replace />} />
-                        <Route path="/website-analyzer" element={<Navigate to="/analyzer" replace />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />
                     </Routes>

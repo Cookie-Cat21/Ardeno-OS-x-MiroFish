@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Zap, Send, Loader2, CheckCircle2, XCircle, Copy, ChevronDown, ChevronUp, Save, FolderKanban, Wrench, ExternalLink, Monitor, Tablet, Smartphone, Palette, Globe, Image as ImageIcon, Play, Volume2 } from "lucide-react";
+import { Zap, Send, Loader2, CheckCircle2, XCircle, Copy, ChevronDown, ChevronUp, Save, FolderKanban, Wrench, ExternalLink, Monitor, Tablet, Smartphone, Palette, Globe } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,35 +13,12 @@ import InteractiveCharacter from "@/components/InteractiveCharacter";
 import { analyzeSentiment, type ExpressionType } from "@/lib/sentiment-analysis";
 import { buttonMotion, cardHoverMotion, pageVariants, sectionReveal, ardenoTransitions } from "@/lib/motion";
 
-interface PlanStep { agent_id: string; agent_name: string; task: string; order: number; skills_to_use?: string[]; dept?: string; }
+interface PlanStep { agent_id: string; agent_name: string; task: string; order: number; skills_to_use?: string[]; }
 interface StepResult extends PlanStep { result: string; error: boolean; skills_used?: string[]; }
 interface OrchestrateResponse { plan: { summary: string; steps: PlanStep[] }; results: StepResult[]; }
 interface Project { id: string; client_name: string; project_type: string | null; }
 
 type PreviewDevice = "desktop" | "tablet" | "mobile";
-
-// ── Dept display helpers ──────────────────────────────────────────────────────
-const DEPT_META_DISPLAY: Record<string, { label: string; color: string }> = {
-  global:                     { label: "Global",       color: "#FF4F00" },
-  commercial_growth:          { label: "Commercial",   color: "#60A5FA" },
-  design_identity:            { label: "Design",       color: "#F472B6" },
-  development_engineering:    { label: "Dev",          color: "#4ADE80" },
-  operations_portal:          { label: "Ops",          color: "#FACC15" },
-  analytics_ai_research:      { label: "Analytics",   color: "#A78BFA" },
-  security_compliance:        { label: "Security",     color: "#F87171" },
-  finance_legal:              { label: "Finance",      color: "#34D399" },
-  localization_accessibility: { label: "Localiz.",     color: "#FB923C" },
-  innovation_rd:              { label: "Innovation",   color: "#38BDF8" },
-  cross_cutting:              { label: "Cross-Cut",    color: "#C084FC" },
-  quality:                    { label: "Quality",      color: "#FCD34D" },
-  validators:                 { label: "Validators",   color: "#86EFAC" },
-  synthetic_testers:          { label: "Testers",      color: "#F9A8D4" },
-  content_studio:             { label: "Content",      color: "#E879F9" },
-  revenue_operations:         { label: "Revenue",      color: "#22D3EE" },
-  client_intelligence:        { label: "Client Intel", color: "#F59E0B" },
-  platform_specialists:       { label: "Platforms",    color: "#10B981" },
-  knowledge_ops:              { label: "Knowledge",    color: "#6366F1" },
-};
 
 function buildPreviewHtml(code: string, design: any): string {
   const headingFont = design?.headingFont || "Inter";
@@ -81,22 +58,6 @@ function tryParseWebsiteBuild(resultStr: string): { _type: string; website_id?: 
   try {
     const parsed = JSON.parse(resultStr);
     if (parsed._type === "website_build") return parsed;
-  } catch {}
-  return null;
-}
-
-function tryParseImageAsset(resultStr: string): { _type: string; url: string; prompt: string } | null {
-  try {
-    const parsed = JSON.parse(resultStr);
-    if (parsed._type === "image_asset") return parsed;
-  } catch {}
-  return null;
-}
-
-function tryParseAudioBriefing(resultStr: string): { _type: string; message: string; text: string } | null {
-  try {
-    const parsed = JSON.parse(resultStr);
-    if (parsed._type === "audio_briefing") return parsed;
   } catch {}
   return null;
 }
@@ -423,35 +384,22 @@ export default function Orchestrator() {
                   
                   {/* Agent Pills */}
                   <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-primary/20">
-                    {response.results.map((r, index) => {
-                      const deptMeta = r.dept ? DEPT_META_DISPLAY[r.dept] : null;
-                      return (
-                      <motion.span
+                    {response.results.map((r, index) => (
+                      <motion.span 
                         key={r.order}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.1 }}
                         className={`inline-flex items-center gap-1.5 text-[10px] font-medium px-3 py-1.5 rounded-full border backdrop-blur-sm ${
-                          r.error
-                            ? "border-destructive/30 text-destructive bg-destructive/10"
-                            : deptMeta
-                            ? ""
+                          r.error 
+                            ? "border-destructive/30 text-destructive bg-destructive/10" 
                             : "border-success/30 text-success bg-success/10"
                         }`}
-                        style={!r.error && deptMeta ? {
-                          color:           deptMeta.color,
-                          borderColor:     deptMeta.color + '50',
-                          backgroundColor: deptMeta.color + '18',
-                        } : undefined}
                       >
                         {r.error ? <XCircle className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />}
                         {r.agent_name}
-                        {deptMeta && !r.error && (
-                          <span className="opacity-60">· {deptMeta.label}</span>
-                        )}
                       </motion.span>
-                      );
-                    })}
+                    ))}
                   </div>
                 </div>
               </motion.div>
@@ -543,23 +491,11 @@ export default function Orchestrator() {
                           </div>
                           
                           <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <div className="flex items-center gap-3 mb-1">
                               <span className="text-sm font-semibold text-primary">{result.agent_name}</span>
                               <span className="text-xs bg-secondary/80 text-muted-foreground px-2 py-0.5 rounded-md">
                                 Step {result.order}
                               </span>
-                              {result.dept && DEPT_META_DISPLAY[result.dept] && (
-                                <span
-                                  className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
-                                  style={{
-                                    color:            DEPT_META_DISPLAY[result.dept].color,
-                                    borderColor:      DEPT_META_DISPLAY[result.dept].color + '44',
-                                    backgroundColor:  DEPT_META_DISPLAY[result.dept].color + '18',
-                                  }}
-                                >
-                                  {DEPT_META_DISPLAY[result.dept].label}
-                                </span>
-                              )}
                             </div>
                             <p className="text-sm text-muted-foreground truncate">
                               {result.task}
@@ -680,67 +616,6 @@ export default function Orchestrator() {
                                           Copy Code
                                         </motion.button>
                                       </div>
-                                    </div>
-                                  );
-                                }
-
-                                const imageAsset = tryParseImageAsset(result.result);
-                                if (imageAsset) {
-                                  return (
-                                    <div className="mt-4 space-y-4">
-                                      <div className="rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl group relative">
-                                        <img src={imageAsset.url} alt="Generated Asset" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                           <div className="text-white">
-                                              <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Generated Asset</p>
-                                              <p className="text-xs font-medium text-white/80 line-clamp-2">{imageAsset.prompt}</p>
-                                           </div>
-                                        </div>
-                                      </div>
-                                      <div className="flex justify-end">
-                                          <motion.button 
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() => window.open(imageAsset.url, '_blank')}
-                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-background border border-border/50 text-xs font-semibold hover:bg-secondary/50 transition-colors"
-                                          >
-                                              <ImageIcon className="w-3.5 h-3.5 text-primary" />
-                                              View Full Resolution
-                                          </motion.button>
-                                      </div>
-                                    </div>
-                                  );
-                                }
-
-                                const audioBriefing = tryParseAudioBriefing(result.result);
-                                if (audioBriefing) {
-                                  return (
-                                    <div className="mt-4 p-6 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
-                                       <div className="flex items-center gap-4">
-                                          <div className="h-12 w-12 rounded-full bg-indigo-500/20 flex items-center justify-center animate-pulse">
-                                              <Volume2 className="h-6 w-6 text-indigo-400" />
-                                          </div>
-                                          <div className="flex-1">
-                                              <h4 className="text-sm font-black text-foreground">Vocal Mission Briefing</h4>
-                                              <p className="text-xs text-muted-foreground">Synthesized audio summary prepared by Vocal Scout</p>
-                                          </div>
-                                            <motion.button 
-                                              whileHover={{ scale: 1.1 }}
-                                              whileTap={{ scale: 0.9 }}
-                                              onClick={() => {
-                                                const utterance = new SpeechSynthesisUtterance(audioBriefing.text);
-                                                window.speechSynthesis.speak(utterance);
-                                              }}
-                                              className="rounded-full h-10 w-10 flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-500/20"
-                                            >
-                                                <Play className="h-5 w-5 fill-white text-white translate-x-0.5" />
-                                            </motion.button>
-                                       </div>
-                                       {audioBriefing.text && (
-                                         <div className="mt-4 p-4 rounded-xl bg-white/5 border border-white/10 italic text-xs text-muted-foreground/80">
-                                            "{audioBriefing.text}"
-                                         </div>
-                                       )}
                                     </div>
                                   );
                                 }
