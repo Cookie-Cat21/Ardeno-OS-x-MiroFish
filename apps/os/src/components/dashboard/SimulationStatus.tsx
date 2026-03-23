@@ -1,5 +1,8 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Globe, Users, Zap, Search } from "lucide-react";
+import { Globe, Users, Zap, Search, PlayCircle, Loader2 } from "lucide-react";
+
+const MIROFISH_API = "http://localhost:5001";
 
 const departments = [
   { id: 1, name: "Commercial & Growth", agents: 58, active: true },
@@ -14,6 +17,45 @@ const departments = [
 ];
 
 export default function SimulationStatus() {
+  const [isStarting, setIsStarting] = useState(false);
+  const [activeSimId, setActiveSimId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check for active simulations on mount
+    const fetchLatestSim = async () => {
+      try {
+        const res = await fetch(`${MIROFISH_API}/api/simulation/list`);
+        const json = await res.json();
+        if (json.success && json.data.length > 0) {
+          const latest = json.data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+          setActiveSimId(latest.simulation_id);
+        }
+      } catch (e) {
+        console.error("MiroFish Backend Standby:", e);
+      }
+    };
+    fetchLatestSim();
+  }, []);
+
+  const handleStartSimulation = async () => {
+    if (!activeSimId) return;
+    setIsStarting(true);
+    try {
+      const res = await fetch(`${MIROFISH_API}/api/simulation/start`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ simulation_id: activeSimId, platform: "parallel" })
+      });
+      const json = await res.json();
+      if (json.success) {
+        window.location.reload(); // Refresh to sync the whole UI
+      }
+    } catch (e) {
+      console.error("Failed to start simulation:", e);
+    } finally {
+      setIsStarting(false);
+    }
+  };
   return (
     <div className="arden-card relative overflow-hidden">
       <div className="absolute top-0 right-0 p-6 opacity-10">
@@ -32,7 +74,21 @@ export default function SimulationStatus() {
               Simulation Active – 512 Agents Syncing
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            {activeSimId && (
+              <button 
+                onClick={handleStartSimulation}
+                disabled={isStarting}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white rounded-xl text-[12px] font-bold transition-all shadow-lg shadow-blue-500/20"
+              >
+                {isStarting ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <PlayCircle size={14} />
+                )}
+                {isStarting ? "Activating..." : "Resume Workforce"}
+              </button>
+            )}
             <div className="flex -space-x-2">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="h-8 w-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">

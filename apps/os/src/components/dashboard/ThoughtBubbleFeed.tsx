@@ -75,27 +75,41 @@ export default function ThoughtBubbleFeed() {
     return () => clearInterval(interval);
   }, [activeSimId]);
 
-  // Fallback simulation (Keep visual pulse if backend is idle)
+  // Improved Fallback simulation (Keep visual pulse if backend is idle)
   useEffect(() => {
     if (isLive) return; 
 
+    const agencyTasks = [
+      "Analyzing user behavior for Ardent Wellness...",
+      "Refining Tailwind CSS layouts for Global Jet Concierge...",
+      "Optimizing PostgreSQL indexing for high-traffic agency tools...",
+      "Generating AI-enhanced copy for client lead magnets...",
+      "Auditing cloud security for the MiroFish ecosystem pulse...",
+      "Scraping competitor market data for Real Estate AI...",
+      "Running multi-modal analysis on brand identity metrics...",
+      "Synthesizing strategy reports for Q3 agency automation..."
+    ];
+
+    const agentRoles = ["Strategy One", "Dev Lead", "Creative Director", "Society Logic", "Ops Unit-7", "Growth Lead"];
+
     const interval = setInterval(() => {
-      const agencyTasks = [
-        "Analyzing user behavior for Ardent Wellness...",
-        "Refining Tailwind CSS layouts for Global Jet Concierge...",
-        "Optimizing PostgreSQL indexing for high-traffic agency tools...",
-        "Generating AI-enhanced copy for client lead magnets...",
-        "Auditing cloud security for the MiroFish ecosystem pulse..."
-      ];
-      const newThought: Thought = {
-        id: Math.random().toString(),
-        agentName: "Society Logic",
-        content: agencyTasks[Math.floor(Math.random() * agencyTasks.length)],
-        type: "thinking",
-        timestamp: new Date(),
-      };
-      setThoughts(prev => [newThought, ...prev.slice(0, 4)]);
-    }, 6000);
+      setThoughts(prev => {
+        // Find a task that isn't the same as the last one
+        let newTask = agencyTasks[Math.floor(Math.random() * agencyTasks.length)];
+        if (prev.length > 0 && prev[0].content === newTask) {
+          newTask = agencyTasks[(agencyTasks.indexOf(newTask) + 1) % agencyTasks.length];
+        }
+
+        const newThought: Thought = {
+          id: Math.random().toString(),
+          agentName: agentRoles[Math.floor(Math.random() * agentRoles.length)],
+          content: newTask,
+          type: "thinking",
+          timestamp: new Date(),
+        };
+        return [newThought, ...prev.slice(0, 4)];
+      });
+    }, 5000);
     return () => clearInterval(interval);
   }, [isLive]);
 
