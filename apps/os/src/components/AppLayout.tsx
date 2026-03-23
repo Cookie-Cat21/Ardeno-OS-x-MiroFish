@@ -25,6 +25,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/pipeline": "Pipeline",
   "/assets": "Assets",
   "/agents": "Agent Manager",
+  "/mirofish": "Parallel Society",
   "/settings": "Settings",
 };
 
@@ -35,6 +36,7 @@ const PAGE_SUMMARIES: Record<string, string> = {
   "/chat": "Work directly with your AI team across shared business context.",
   "/projects": "Track client delivery, milestones, and execution momentum.",
   "/agents": "Shape your internal agent roster, prompts, and capabilities.",
+  "/mirofish": "Access the 300+ agents in MiroFish for high-stakes simulations and market forecasting.",
 };
 
 export function AppLayout() {

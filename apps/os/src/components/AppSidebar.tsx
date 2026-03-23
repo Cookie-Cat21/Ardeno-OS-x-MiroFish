@@ -59,6 +59,7 @@ const navGroups = [
       { title: "Agent Manager", url: "/agents", icon: Users },
       { title: "Orchestrator", url: "/orchestrate", icon: Zap },
       { title: "Skills", url: "/skills", icon: Wrench },
+      { title: "Parallel Society", url: "/mirofish", icon: Globe },
       { title: "Analyzer", url: "/analyzer", icon: Globe },
       { title: "Site Builder", url: "/website-builder", icon: PanelsTopLeft },
     ],

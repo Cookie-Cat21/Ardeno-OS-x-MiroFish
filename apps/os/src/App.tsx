@@ -30,6 +30,7 @@ import Nurturing from "./pages/Nurturing";
 import Skills from "./pages/Skills";
 import WebsiteBuilder from "./pages/WebsiteBuilder";
 import AgentManager from "./pages/AgentManager";
+import ParallelSociety from "./components/ParallelSociety";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const App = () => (
                         <Route path="/skills" element={<Skills />} />
                         <Route path="/website-builder" element={<WebsiteBuilder />} />
                         <Route path="/agents" element={<AgentManager />} />
+                        <Route path="/mirofish" element={<ParallelSociety />} />
                         <Route path="/settings" element={<SettingsPage />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />
