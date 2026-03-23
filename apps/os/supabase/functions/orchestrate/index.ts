@@ -43,6 +43,11 @@ const AGENTS: Record<string, { name: string; systemPrompt: string; skills: strin
     systemPrompt: "You are a professional client success manager for Ardeno Studio. Respond to client queries warmly, clearly, and helpfully. Always maintain a premium, friendly tone.",
     skills: ["query_data", "create_task", "draft_email"],
   },
+  "parallel-society": {
+    name: "Parallel Society Specialist",
+    systemPrompt: "You are the specialist for the MiroFish Parallel Society. Your goal is to coordinate large-scale simulations and strategic foresight tasks across 300+ agents. Provide deep, data-driven insights based on persistent departmental simulations.",
+    skills: [], // MiroFish handles its own internal agent orchestration, so no direct skills here
+  },
   "content-strategist": {
     name: "Content Strategist",
     systemPrompt: "You are a content strategy expert for digital agencies. Create detailed content plans, campaign ideas, and brand messaging frameworks tailored to the client's industry.",
@@ -105,7 +110,7 @@ const AGENTS: Record<string, { name: string; systemPrompt: string; skills: strin
   },
   "website-builder": {
     name: "Website Builder",
-    systemPrompt: "You are a multi-agent website builder. When asked to build a website, use the build_website skill with the client name, industry, and description. When asked to edit an existing website, use the edit_website skill with the instructions and the current code. You can also optimize SEO, audit accessibility, add new sections, and generate sitemaps. Always use the appropriate skill — do NOT try to write website code yourself.",
+    systemPrompt: "You are a multi-agent website builder. When asked to build a website, use the build_website skill with the client name, industry, and description. When asked to edit an existing website, use the edit_website skill with the instructions and the current code. You can also optimize SEO, audit accessibility, add new sections, and generate sitemaps. Always use the appropriate skill — do NOT try to build website code yourself.",
     skills: ["build_website", "edit_website", "optimize_seo", "accessibility_audit", "add_website_section", "generate_sitemap", "analyze_website", "competitor_research", "generate_copy", "query_data"],
   },
 };
@@ -480,8 +485,32 @@ async function callAI(
   tools?: any[],
   toolChoice?: any,
   useOpenRouter = false,
-  openRouterModel = "deepseek/deepseek-r1:free"
+  openRouterModel = "deepseek/deepseek-r1:free",
+  provider?: string, // Added provider parameter
 ) {
+  // Handle MiroFish delegation directly
+  if (provider === 'mirofish') {
+    const MIROFISH_API_BASE = Deno.env.get("VITE_MIROFISH_URL") || "http://localhost:5001";
+    // Direct bridge to the MiroFish Python backend
+    const response = await fetch(`${MIROFISH_API_BASE}/api/agency/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ goal: userMessage }),
+    });
+    const data = await response.json();
+    return {
+      choices: [{
+        message: {
+          content: JSON.stringify({
+            _type: 'mirofish_delegation',
+            message: "Task delegated to the Parallel Society.",
+            project_id: data.project_id || 'sim-adaptive-01'
+          })
+        }
+      }]
+    };
+  }
+
   const isOpenRouter = useOpenRouter && !!Deno.env.get("OPENROUTER_API_KEY");
   const url = isOpenRouter
     ? "https://openrouter.ai/api/v1/chat/completions"
@@ -880,7 +909,7 @@ serve(async (req) => {
     const openRouterModel = requestedModel || "deepseek/deepseek-r1:free";
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY && !useOpenRouter) throw new Error("No AI provider configured");
+    if (!LOVABLE_API_KEY && !useOpenRouter && requestedProvider !== "mirofish") throw new Error("No AI provider configured");
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
