@@ -42,3 +42,25 @@ def complete_agency_ticket():
     
     workflow_engine.complete_ticket(project_id, ticket_id, result)
     return jsonify({"status": "updated"})
+
+@agency_bp.route('/stream/<project_id>', methods=['GET'])
+def stream_project_events(project_id):
+    """SSE endpoint for real-time project telemetry."""
+    from flask import Response, stream_with_context
+    import json
+
+    def event_stream():
+        q = workflow_engine.subscribe(project_id)
+        # Send initial ping to establish connection
+        yield f"data: {json.dumps({'type': 'connection_established'})}\n\n"
+        
+        try:
+            while True:
+                # Block until an event is available
+                event = q.get()
+                yield f"data: {json.dumps(event)}\n\n"
+        except GeneratorExit:
+            # Unsubscribe? We'd need to track queues better to remove them
+            pass
+
+    return Response(stream_with_context(event_stream()), mimetype="text/event-stream")

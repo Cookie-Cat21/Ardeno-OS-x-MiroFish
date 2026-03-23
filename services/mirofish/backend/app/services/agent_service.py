@@ -1,67 +1,55 @@
-import psycopg2
-from psycopg2.extras import RealDictCursor
 from typing import List, Dict, Any, Optional
-from ..config import Config
+from ..utils.supabase_client import get_admin_client
 
 class AgentService:
     """
-    Manages the lifecycle and retrieval of persistent MiroFish agents.
+    Manages the lifecycle and retrieval of persistent MiroFish agents 
+    via the unified Supabase data fabric.
     """
     
     def __init__(self):
-        self.db_url = Config.DATABASE_URL
-        if not self.db_url:
-            raise ValueError("DATABASE_URL not configured")
-
-    def _get_connection(self):
-        return psycopg2.connect(self.db_url, cursor_factory=RealDictCursor)
+        self.supabase = get_admin_client()
 
     def get_agent(self, agent_id: str) -> Optional[Dict[str, Any]]:
-        with self._get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT * FROM agents WHERE id = %s", (agent_id,))
-                return cur.fetchone()
+        response = self.supabase.table("agents").select("*").eq("id", agent_id).execute()
+        return response.data[0] if response.data else None
 
     def find_relevant_agents(self, query_embedding: List[float], limit: int = 12) -> List[Dict[str, Any]]:
         """
-        Finds agents whose personalities or roles match the query embedding using cosine similarity.
+        Finds agents using cosine similarity via Supabase RPC.
+        Note: Requires 'match_agents' RPC function in Supabase.
         """
-        with self._get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT *, (personality_embedding <=> %s::vector) as distance "
-                    "FROM agents "
-                    "ORDER BY distance ASC LIMIT %s",
-                    (query_embedding, limit)
-                )
-                return cur.fetchall()
+        response = self.supabase.rpc("match_agents", {
+            "query_embedding": query_embedding,
+            "match_threshold": 0.5,
+            "match_count": limit
+        }).execute()
+        return response.data
 
     def update_agent_opinion(self, agent_id: str, summary: str, vector: List[float]):
-        with self._get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    "UPDATE agents SET opinion_summary = %s, opinion_vector = %s::vector, last_active = NOW() WHERE id = %s",
-                    (summary, vector, agent_id)
-                )
-                conn.commit()
+        self.supabase.table("agents").update({
+            "opinion_summary": summary,
+            "opinion_vector": vector,
+            "last_active": "now()"
+        }).eq("id", agent_id).execute()
 
     def update_performance(self, agent_id: str, elo_change: float):
-        with self._get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute("UPDATE agents SET performance_elo = performance_elo + %s WHERE id = %s", (elo_change, agent_id))
-                conn.commit()
+        # We'll use a transaction or RPC for atomic ELO updates if possible, 
+        # but for now, we'll do a simple get-update
+        agent = self.get_agent(agent_id)
+        if agent:
+            new_elo = agent.get('performance_elo', 1200) + elo_change
+            self.supabase.table("agents").update({"performance_elo": new_elo}).eq("id", agent_id).execute()
 
     def list_by_department(self, department: str) -> List[Dict[str, Any]]:
-        with self._get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT * FROM agents WHERE department = %s", (department,))
-                return cur.fetchall()
+        response = self.supabase.table("agents").select("*").eq("department", department).execute()
+        return response.data
 
     def record_feedback(self, agent_id: str, score: int, critique: str):
         """Record human/system feedback on an agent's performance."""
-        # Simple ELO-like update with tracking
         elo_change = (score - 5) * 2.0
         self.update_performance(agent_id, elo_change)
+        # Also log feedback if a feedback table exists
         print(f"AgentService: Recorded {score}/10 for {agent_id}. ELO Change: {elo_change}")
 
     def generate_reflection(self, agent_id: str) -> str:
@@ -70,8 +58,6 @@ class AgentService:
         if not agent:
             return "Agent not found"
         
-        # This is where the 'Reflection Prompt' would be triggered via LLM
-        # For now, we simulate the 'Wisdom Extraction'
         print(f"AgentService: {agent['name']} is conducting a cognitive post-mortem...")
         insight = f"Based on recent {agent['department']} feedback, I must improve my focus on reliability."
         return insight

@@ -45,8 +45,8 @@ const AGENTS: Record<string, { name: string; systemPrompt: string; skills: strin
   },
   "parallel-society": {
     name: "Parallel Society Specialist",
-    systemPrompt: "You are the specialist for the MiroFish Parallel Society. Your goal is to coordinate large-scale simulations and strategic foresight tasks across 300+ agents. Provide deep, data-driven insights based on persistent departmental simulations.",
-    skills: [], // MiroFish handles its own internal agent orchestration, so no direct skills here
+    systemPrompt: "You are the specialist for the MiroFish Parallel Society and the EXCLUSIVE bridge to the Discord communication layer. Your goal is to coordinate large-scale simulations across 300+ agents. You must ensure all simulation discussions are mirrored in the correct Discord department channels and threads. Provide deep, data-driven insights based on persistent departmental simulations while maintaining continuous sync between Ardeno OS and Discord.",
+    skills: ["simulate_foresight"], 
   },
   "content-strategist": {
     name: "Content Strategist",
@@ -472,7 +472,23 @@ const SKILL_TOOLS: Record<string, any> = {
       },
     },
   },
+  simulate_foresight: {
+    type: "function",
+    function: {
+      name: "simulate_foresight",
+      description: "Delegate a complex, multi-step goal to the Parallel Society (MiroFish) for deep simulation and strategic foresight. Use this for high-level market analysis, long-term planning, or multi-departmental coordination.",
+      parameters: {
+        type: "object",
+        properties: {
+          goal: { type: "string", description: "The strategic goal or simulation objective" },
+          focus_departments: { type: "array", items: { type: "string" }, description: "Specific departments to prioritize in the simulation" },
+        },
+        required: ["goal"], additionalProperties: false,
+      },
+    },
+  },
 };
+
 
 const AGENT_LIST = Object.entries(AGENTS)
   .map(([id, a]) => `- ${id}: ${a.name} (skills: ${a.skills.join(", ")})`)
@@ -504,11 +520,13 @@ async function callAI(
           content: JSON.stringify({
             _type: 'mirofish_delegation',
             message: "Task delegated to the Parallel Society.",
-            project_id: data.project_id || 'sim-adaptive-01'
+            project_id: data.project_id || 'sim-adaptive-01',
+            stream_url: `${MIROFISH_API_BASE}/api/agency/stream/${data.project_id}`
           })
         }
       }]
     };
+
   }
 
   const isOpenRouter = useOpenRouter && !!Deno.env.get("OPENROUTER_API_KEY");
@@ -794,6 +812,25 @@ async function executeSkill(
             code: editData.code,
             message: `✅ Website edited successfully. Applied: ${args.instructions.slice(0, 100)}`,
           }),
+        };
+        break;
+      }
+      case "simulate_foresight": {
+        const MIROFISH_API_BASE = Deno.env.get("VITE_MIROFISH_URL") || "http://localhost:5001";
+        const response = await fetch(`${MIROFISH_API_BASE}/api/agency/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ goal: args.goal, departments: args.focus_departments }),
+        });
+        const data = await response.json();
+        result = {
+          success: true,
+          result: JSON.stringify({
+            _type: 'mirofish_delegation',
+            message: "Task delegated to the Parallel Society.",
+            project_id: data.project_id || 'sim-adaptive-01',
+            stream_url: `${MIROFISH_API_BASE}/api/agency/stream/${data.project_id}`
+          })
         };
         break;
       }

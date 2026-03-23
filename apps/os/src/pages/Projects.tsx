@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArdenoEmptyState } from "@/components/ui/ardeno-empty-state";
+import { VercelStatusBadge } from "@/components/dashboard/VercelStatusBadge";
 
 const STATUS_COLORS: Record<string, string> = {
   Discovery: "bg-blue-500/10 text-blue-400 border-blue-500/20",
@@ -83,6 +84,7 @@ export default function Projects() {
             <span className={`text-xs border px-2.5 py-1 rounded-lg ${STATUS_COLORS[selectedProject.status || "Discovery"] || "bg-muted text-muted-foreground"}`}>
               {selectedProject.status}
             </span>
+            <VercelStatusBadge projectId={selectedProject.id} />
           </div>
           <p className="text-sm text-muted-foreground">{selectedProject.project_type}</p>
         </div>
@@ -189,6 +191,7 @@ export default function Projects() {
                   <span className={`text-[10px] border px-2 py-0.5 rounded-md ${STATUS_COLORS[project.status || "Discovery"] || "bg-muted text-muted-foreground"}`}>
                     {project.status}
                   </span>
+                  <VercelStatusBadge projectId={project.id} />
                 </div>
                 <p className="text-xs text-muted-foreground truncate">{project.project_type} · {project.brief}</p>
               </div>
