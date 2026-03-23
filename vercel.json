@@ -1,33 +1,9 @@
 {
   "version": 2,
-  "name": "ardeno-os-x-mirofish",
-  "builds": [
-    {
-      "src": "apps/os/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    },
-    {
-      "src": "services/mirofish/backend/api/index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "services/mirofish/backend/api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "apps/os/$1",
-      "continue": true
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "apps/os/index.html"
-    }
+  "buildCommand": "cd apps/os && npm install && npm run build",
+  "outputDirectory": "apps/os/dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index" }
   ]
 }
