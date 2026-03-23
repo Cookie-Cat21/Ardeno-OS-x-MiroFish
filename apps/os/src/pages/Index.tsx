@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Sparkles, MessageSquare, Globe, Zap } from "lucide-react";
 import { PageTransition, FadeChild } from "@/components/MotionPrimitives";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import InteractiveAuroraCharacter from "@/components/InteractiveAuroraCharacter";
 
 import SimulationStatus from "@/components/dashboard/SimulationStatus";
@@ -58,13 +59,17 @@ export default function Index() {
           </motion.div>
 
           <div className="mt-12 flex flex-wrap items-center justify-center gap-5">
-            <Button size="lg" className="h-16 rounded-[24px] px-10 text-[17px] font-bold shadow-2xl shadow-blue-500/20 bg-primary hover:scale-[1.02] transition-transform">
-              Talk to Orchestrator
-              <MessageSquare className="ml-3 h-5 w-5" />
+            <Button asChild size="lg" className="h-16 rounded-[24px] px-10 text-[17px] font-bold shadow-2xl shadow-blue-500/20 bg-primary hover:scale-[1.02] transition-transform">
+              <Link to="/chat" className="flex items-center">
+                Talk to Orchestrator
+                <MessageSquare className="ml-3 h-5 w-5" />
+              </Link>
             </Button>
-            <Button variant="outline" size="lg" className="h-16 rounded-[24px] px-10 text-[17px] font-bold border-slate-200/50 bg-white/40 backdrop-blur-md hover:bg-white/80 transition-colors">
-              Access The Society 
-              <Globe className="ml-3 h-5 w-5" />
+            <Button asChild variant="outline" size="lg" className="h-16 rounded-[24px] px-10 text-[17px] font-bold border-slate-200/50 bg-white/40 backdrop-blur-md hover:bg-white/80 transition-colors">
+              <Link to="/mirofish" className="flex items-center">
+                Access The Society 
+                <Globe className="ml-3 h-5 w-5" />
+              </Link>
             </Button>
           </div>
         </div>
