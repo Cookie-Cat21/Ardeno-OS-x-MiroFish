@@ -11,9 +11,9 @@ interface Thought {
 }
 
 const mockThoughts: Thought[] = [
-  { id: "1", agentName: "Strategy One", content: "Analyzing market gaps in the Sri Lankan tech sector...", type: "thinking", timestamp: new Date() },
-  { id: "2", agentName: "Lead Gen Bot", content: "Identifying high-intent targets in Colombo region", type: "acting", timestamp: new Date() },
-  { id: "3", agentName: "Creative Director", content: "Designing minimalist glass interfaces for Ardeno OS", type: "acting", timestamp: new Date() },
+  { id: "1", agentName: "Strategy One", content: "Analyzing market gaps in the Sri Lankan tech sector for Ardent Wellness...", type: "thinking", timestamp: new Date() },
+  { id: "2", agentName: "Dev Lead", content: "Optimizing React performance and bundle size for Global Jet Concierge...", type: "acting", timestamp: new Date() },
+  { id: "3", agentName: "Creative Director", content: "Generating minimalist glassmorphism mockups for the new Sentient Surface...", type: "acting", timestamp: new Date() },
 ];
 
 const MIROFISH_API = "http://localhost:5001"; // Default to local for bridging
@@ -80,10 +80,17 @@ export default function ThoughtBubbleFeed() {
     if (isLive) return; 
 
     const interval = setInterval(() => {
+      const agencyTasks = [
+        "Analyzing user behavior for Ardent Wellness...",
+        "Refining Tailwind CSS layouts for Global Jet Concierge...",
+        "Optimizing PostgreSQL indexing for high-traffic agency tools...",
+        "Generating AI-enhanced copy for client lead magnets...",
+        "Auditing cloud security for the MiroFish ecosystem pulse..."
+      ];
       const newThought: Thought = {
         id: Math.random().toString(),
-        agentName: "Parallel Logic",
-        content: "Idling simulation step #" + Math.floor(Math.random() * 1000) + " - Waiting for live stream...",
+        agentName: "Society Logic",
+        content: agencyTasks[Math.floor(Math.random() * agencyTasks.length)],
         type: "thinking",
         timestamp: new Date(),
       };

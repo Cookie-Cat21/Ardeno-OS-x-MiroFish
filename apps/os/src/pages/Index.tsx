@@ -50,12 +50,14 @@ export default function Index() {
               <span className="h-1.5 w-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(0,122,255,0.8)]" />
               {getGreeting()}, {firstName}
             </div>
-            <h1 className="font-display text-[clamp(2.5rem,5.5vw,4.8rem)] font-bold mb-3 tracking-[-0.05em] text-slate-900 drop-shadow-sm leading-[0.85]">
-                The Society is currently optimized for your objective.
-            </h1>
-            <p className="mx-auto mt-6 max-w-[550px] text-lg font-medium text-slate-500/90 leading-relaxed italic">
-              "Ardeno OS is now a pure sentient surface. 512 agents are active across the ecosystem."
-            </p>
+            <h1 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[0.9] tracking-[-0.05em] text-slate-900 mb-6 drop-shadow-sm">
+            Ardeno OS <br />
+            <span className="text-slate-400 font-medium">Powered by MiroFish</span>
+          </h1>
+          <p className="max-w-[600px] text-lg font-medium text-slate-500 leading-relaxed mb-10">
+            A high-fidelity sentient agency environment. 512 specialized agents 
+            collaborating in a parallel society to build your vision.
+          </p>
           </motion.div>
 
           <div className="mt-12 flex flex-wrap items-center justify-center gap-5">

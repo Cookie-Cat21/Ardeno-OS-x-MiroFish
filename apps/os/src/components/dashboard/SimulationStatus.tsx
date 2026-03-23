@@ -2,15 +2,15 @@ import { motion } from "framer-motion";
 import { Globe, Users, Zap, Search } from "lucide-react";
 
 const departments = [
-  { id: 1, name: "Intelligence", agents: 42, active: true },
-  { id: 2, name: "Marketing", agents: 68, active: true },
-  { id: 3, name: "Development", agents: 125, active: false },
-  { id: 4, name: "Sales", agents: 35, active: true },
-  { id: 5, name: "Support", agents: 50, active: false },
-  { id: 6, name: "Operations", agents: 80, active: true },
-  { id: 7, name: "Creative", agents: 45, active: true },
-  { id: 8, name: "Legal", agents: 12, active: false },
-  { id: 9, name: "Strategy", agents: 25, active: true },
+  { id: 1, name: "Commercial & Growth", agents: 58, active: true },
+  { id: 2, name: "Design & Identity", agents: 45, active: true },
+  { id: 3, name: "Development & Engineering", agents: 142, active: true },
+  { id: 4, name: "Operations & Portal", agents: 80, active: true },
+  { id: 5, name: "Analytics & Research", agents: 65, active: true },
+  { id: 6, name: "Security & Compliance", agents: 30, active: true },
+  { id: 7, name: "Finance & Legal", agents: 22, active: true },
+  { id: 8, name: "Localization & Accessibility", agents: 40, active: true },
+  { id: 9, name: "Innovation & R&D", agents: 30, active: true },
 ];
 
 export default function SimulationStatus() {
