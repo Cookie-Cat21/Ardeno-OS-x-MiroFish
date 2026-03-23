@@ -1,0 +1,13 @@
+{
+  "name": "ardeno-os-x-mirofish-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev:os": "cd apps/os && npm run dev",
+    "dev:mirofish": "cd services/mirofish/backend && python main.py",
+    "start": "npm run dev:os & npm run dev:mirofish"
+  }
+}

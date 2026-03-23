@@ -1,0 +1,45 @@
+# Node
+node_modules/
+dist/
+.claude/
+.vite/
+bun.lock
+bun.lockb
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.venv/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# OS/IDEs
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+apps/os/supabase/.temp/
+services/mirofish/backend/uploads/
