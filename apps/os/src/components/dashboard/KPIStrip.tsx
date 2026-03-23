@@ -12,87 +12,83 @@ interface KPIData {
 export default function KPIStrip({ data }: { data: KPIData }) {
   const kpis = [
     {
-      label: "Revenue",
+      label: "Revenue Signal",
       value: data.revenue,
       prefix: "$",
       trend: "+12%",
       trendUp: true,
-      context: "Pipeline total",
+      context: "Pipeline value",
       icon: DollarSign,
-      accentVar: "--chart-2",
+      color: "blue",
     },
     {
       label: "Active Agents",
       value: data.activeAgents,
-      trend: "All systems go",
+      trend: "Optimal",
       trendUp: true,
-      context: "AI workforce",
+      context: "Society load",
       icon: Bot,
-      accentVar: "--chart-3",
+      color: "indigo",
     },
     {
-      label: "Leads",
+      label: "Lead Flow",
       value: data.leads,
-      trend: data.leads > 0 ? `+${Math.min(data.leads, 7)} this week` : "Start prospecting",
+      trend: `+${Math.min(data.leads, 7)}`,
       trendUp: data.leads > 0,
-      context: data.leads > 10 ? "Top source: Website" : "Grow your pipeline",
+      context: "Qualified leads",
       icon: Users,
-      accentVar: "--chart-4",
+      color: "violet",
     },
     {
-      label: "Open Projects",
+      label: "Open Delivery",
       value: data.projects,
-      trend: data.projects > 0 ? `${data.projects} active` : "No projects yet",
+      trend: "Active",
       trendUp: data.projects > 0,
-      context: "In progress",
+      context: "Live projects",
       icon: FolderKanban,
-      accentVar: "--chart-1",
+      color: "sky",
     },
   ];
 
+  const colorMap: Record<string, string> = {
+    blue: "bg-blue-50 text-blue-500",
+    indigo: "bg-indigo-50 text-indigo-500",
+    violet: "bg-violet-50 text-violet-500",
+    sky: "bg-sky-50 text-sky-500",
+  };
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {kpis.map((kpi, i) => (
         <motion.div
           key={kpi.label}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.06, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="kpi-card p-5 group"
-          style={{
-            // @ts-ignore
-            "--kpi-accent": `hsl(var(${kpi.accentVar}))`,
-          }}
+          transition={{ delay: i * 0.05, duration: 0.5 }}
+          className="arden-card group !p-5"
         >
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[var(--radius)]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 80% 20%, hsl(var(${kpi.accentVar}) / 0.06), transparent 60%)`,
-            }}
-          />
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-3">
-              <div className="h-8 w-8 rounded-lg flex items-center justify-center transition-colors"
-                style={{ background: `hsl(var(${kpi.accentVar}) / 0.1)` }}>
-                <kpi.icon className="h-4 w-4" style={{ color: `hsl(var(${kpi.accentVar}))` }} />
-              </div>
-              <div className="flex items-center gap-1">
-                {kpi.trendUp ? (
-                  <TrendingUp className="h-3 w-3 text-success" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 text-muted-foreground" />
-                )}
-                <span className={`text-[10px] font-data ${kpi.trendUp ? "text-success" : "text-muted-foreground"}`}>
-                  {kpi.trend}
-                </span>
-              </div>
+          <div className="flex items-center justify-between mb-4">
+            <div className={`h-9 w-9 rounded-xl flex items-center justify-center shadow-sm border border-white ${colorMap[kpi.color]}`}>
+              <kpi.icon className="h-4.5 w-4.5" />
             </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50/50 border border-slate-100/50">
+              {kpi.trendUp ? (
+                <TrendingUp className="h-3 w-3 text-green-500" />
+              ) : (
+                <TrendingDown className="h-3 w-3 text-slate-400" />
+              )}
+              <span className={`text-[10px] font-bold ${kpi.trendUp ? "text-green-600" : "text-slate-400"}`}>
+                {kpi.trend}
+              </span>
+            </div>
+          </div>
 
-            <div className="font-display text-3xl lg:text-4xl text-foreground font-semibold tracking-tight">
-              {kpi.prefix}<AnimatedNumber value={kpi.value} />
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5 font-body">{kpi.label}</p>
-            <p className="text-[10px] text-muted-foreground/40 font-data mt-0.5">{kpi.context}</p>
+          <div className="font-display text-4xl text-slate-900 font-bold tracking-tight">
+            {kpi.prefix}<AnimatedNumber value={kpi.value} />
+          </div>
+          <div className="mt-2 flex flex-col">
+             <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
+             <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mt-0.5">{kpi.context}</p>
           </div>
         </motion.div>
       ))}

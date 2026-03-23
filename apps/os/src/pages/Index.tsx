@@ -3,34 +3,24 @@ import { AGENTS } from "@/lib/agents";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, Sparkles, Orbit, Activity } from "lucide-react";
+import { ArrowRight, Sparkles, Plus, Search, Globe, Zap, MessageSquare } from "lucide-react";
 import { PageTransition, FadeChild } from "@/components/MotionPrimitives";
 import { ArdenoMark } from "@/components/brand/ArdenoBrand";
 import { Button } from "@/components/ui/button";
+import InteractiveAuroraCharacter from "@/components/InteractiveAuroraCharacter";
 
 import KPIStrip from "@/components/dashboard/KPIStrip";
-import RevenueSparkline from "@/components/dashboard/RevenueSparkline";
-import PipelineFunnel from "@/components/dashboard/PipelineFunnel";
-import ActiveAgentCards from "@/components/dashboard/ActiveAgentCards";
+import SimulationStatus from "@/components/dashboard/SimulationStatus";
+import ThoughtBubbleFeed from "@/components/dashboard/ThoughtBubbleFeed";
 import RealActivityFeed from "@/components/dashboard/RealActivityFeed";
 import UpcomingTasks from "@/components/dashboard/UpcomingTasks";
 import DailyBriefing from "@/components/dashboard/DailyBriefing";
-import GoalTracking from "@/components/dashboard/GoalTracking";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
   if (hour < 12) return "Good Morning";
   if (hour < 17) return "Good Afternoon";
   return "Good Evening";
-}
-
-function SectionLabel({ children }: { children: string }) {
-  return (
-    <div className="mb-4 flex items-center gap-3">
-      <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground/60">{children}</span>
-      <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
-    </div>
-  );
 }
 
 export default function Index() {
@@ -60,73 +50,48 @@ export default function Index() {
   const activeAgents = AGENTS.filter((agent) => agent.enabled).length;
 
   return (
-    <PageTransition className="page-shell max-w-[1440px]">
-      <FadeChild className="mb-6">
-        <div className="ardeno-panel ambient-glow overflow-hidden rounded-[28px] px-5 py-6 sm:px-6 md:px-7 md:py-8 lg:px-8">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,79,0,0.1),transparent_28%)]" />
-          <div className="relative z-[1] grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div>
-              <div className="mb-4 flex flex-wrap items-center gap-3">
-                <span className="brand-chip">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" />
-                  Ardeno Studio Command Center
-                </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 font-data text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                  {activeAgents} Agents Online
-                </span>
-              </div>
+    <PageTransition className="max-w-[1500px] mx-auto space-y-8">
+      {/* 1. HERO: THE SENTIENT SURFACE */}
+      <FadeChild>
+        <div className="arden-card relative flex flex-col items-center justify-center py-12 px-6 text-center overflow-hidden border-none shadow-none bg-transparent">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(0,122,255,0.05),transparent_60%)]" />
+          
+          <div className="mb-8 p-1 rounded-full border border-white bg-white/40 shadow-xl">
+             <InteractiveAuroraCharacter state="idle" size="lg" />
+          </div>
 
-              <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:text-xs">{getGreeting()}, {firstName}</p>
-              <h1 className="mt-3 max-w-[13ch] font-display text-[clamp(2.15rem,4vw,3.7rem)] font-semibold leading-[0.94] tracking-[-0.05em] text-foreground">
-                Ardeno OS is live with a sharper view of revenue, delivery, and AI execution.
-              </h1>
-              <p className="mt-4 max-w-[42rem] text-[15px] leading-7 text-muted-foreground md:text-base">
-                Everything critical is surfaced here: operational momentum, high-value work, pipeline movement, and your active AI workforce.
-              </p>
-
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Button size="lg" className="min-w-[198px] justify-between gap-3 px-5 md:min-w-[212px]">
-                  Open Daily Briefing
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="lg" className="min-w-[198px] justify-between gap-3 px-5 md:min-w-[212px]">
-                  Review Agent Activity
-                  <Orbit className="h-4 w-4" />
-                </Button>
-              </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4 max-w-[800px]"
+          >
+            <div className="flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-blue-500/70">
+              <span className="h-1 w-1 rounded-full bg-blue-500" />
+              {getGreeting()}, {firstName}
             </div>
+            <h1 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[0.9] tracking-[-0.04em] text-slate-900">
+              Your society is working on high-value delivery.
+            </h1>
+            <p className="mx-auto mt-4 max-w-[560px] text-base md:text-lg font-medium text-slate-500/90 leading-relaxed">
+              Ardeno OS is now fully integrated with 512 agents. Simulation active across 9 departments.
+            </p>
+          </motion.div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              <div className="ardeno-panel rounded-[22px] px-4 py-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Revenue Signal</span>
-                  <ArdenoMark className="h-9 w-9 p-2" glow />
-                </div>
-                <div className="font-display text-3xl text-foreground">${dbStats.revenue.toLocaleString()}</div>
-                <p className="mt-1 text-sm text-muted-foreground">Pipeline value currently tracked in the system.</p>
-              </div>
-              <div className="ardeno-panel rounded-[22px] px-4 py-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Delivery Load</span>
-                  <Activity className="h-4 w-4 text-primary" />
-                </div>
-                <div className="font-display text-3xl text-foreground">{dbStats.projects}</div>
-                <p className="mt-1 text-sm text-muted-foreground">Active projects and ongoing client delivery commitments.</p>
-              </div>
-              <div className="ardeno-panel rounded-[22px] px-4 py-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Lead Flow</span>
-                  <Sparkles className="h-4 w-4 text-primary" />
-                </div>
-                <div className="font-display text-3xl text-foreground">{dbStats.leads}</div>
-                <p className="mt-1 text-sm text-muted-foreground">New and active opportunities currently feeding the business engine.</p>
-              </div>
-            </div>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Button size="lg" className="h-14 rounded-2xl px-8 text-base shadow-lg shadow-blue-500/10">
+              Talk to Orchestrator
+              <MessageSquare className="ml-3 h-5 w-5" />
+            </Button>
+            <Button variant="outline" size="lg" className="h-14 rounded-2xl px-8 text-base border-slate-200/60 bg-white/40">
+              Review Board 
+              <Globe className="ml-3 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </FadeChild>
 
-      <FadeChild className="mb-6">
+      {/* 2. CORE HUD: KPI STRIP */}
+      <FadeChild>
         <KPIStrip
           data={{
             revenue: dbStats.revenue,
@@ -137,44 +102,37 @@ export default function Index() {
         />
       </FadeChild>
 
-      <div className="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_340px]">
-        <div className="space-y-5">
-          <FadeChild>
-            <SectionLabel>Revenue & Pipeline</SectionLabel>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <RevenueSparkline />
-              <PipelineFunnel />
-            </div>
-          </FadeChild>
-        </div>
-
-        <div className="space-y-5">
-          <FadeChild>
-            <SectionLabel>AI Agents</SectionLabel>
-            <ActiveAgentCards />
-          </FadeChild>
-
-          <FadeChild>
-            <SectionLabel>Recent Activity</SectionLabel>
-            <div className="dash-card max-h-[320px] overflow-hidden overflow-y-auto">
-              <RealActivityFeed />
-            </div>
-          </FadeChild>
-        </div>
+      {/* 3. SIMULATION & THOUGHTS */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
+        <FadeChild>
+          <SimulationStatus />
+        </FadeChild>
+        <FadeChild>
+          <ThoughtBubbleFeed />
+        </FadeChild>
       </div>
 
-      <FadeChild className="mb-6">
-        <SectionLabel>Tasks & Intelligence</SectionLabel>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <UpcomingTasks />
-          <DailyBriefing />
-        </div>
-      </FadeChild>
-
-      <FadeChild>
-        <SectionLabel>Monthly Goals</SectionLabel>
-        <GoalTracking />
-      </FadeChild>
+      {/* 4. OPERATIONAL Momentum */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+        <FadeChild>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3 mb-2">
+              <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Task Pipeline</h4>
+              <div className="h-px flex-1 bg-slate-100" />
+            </div>
+            <UpcomingTasks />
+          </div>
+        </FadeChild>
+        <FadeChild>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3 mb-2">
+              <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Daily Intelligence</h4>
+              <div className="h-px flex-1 bg-slate-100" />
+            </div>
+            <DailyBriefing />
+          </div>
+        </FadeChild>
+      </div>
     </PageTransition>
   );
 }

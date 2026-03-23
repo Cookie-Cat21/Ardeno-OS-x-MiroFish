@@ -53,41 +53,21 @@ const navGroups = [
     ],
   },
   {
-    label: "AI CORE",
+    label: "PARALLEL SOCIETY", // RENAMED FROM AI CORE
     items: [
-      { title: "Agents", url: "/chat", icon: Bot },
-      { title: "Agent Manager", url: "/agents", icon: Users },
+      { title: "The Society", url: "/mirofish", icon: Globe },
       { title: "Orchestrator", url: "/orchestrate", icon: Zap },
-      { title: "Skills", url: "/skills", icon: Wrench },
-      { title: "Parallel Society", url: "/mirofish", icon: Globe },
-      { title: "Analyzer", url: "/analyzer", icon: Globe },
-      { title: "Site Builder", url: "/website-builder", icon: PanelsTopLeft },
+      { title: "Agent Chat", url: "/chat", icon: Bot },
+      { title: "Agent Roster", url: "/agents", icon: Users },
+      { title: "Worker Skills", url: "/skills", icon: Wrench },
     ],
   },
   {
-    label: "BUSINESS",
-    items: [
-      { title: "Leads", url: "/leads", icon: Users },
-      { title: "Pipeline", url: "/pipeline", icon: Briefcase },
-      { title: "Nurturing", url: "/nurturing", icon: GitBranch },
-      { title: "Outreach", url: "/outreach", icon: Send },
-      { title: "Proposals", url: "/proposals", icon: FileText },
-      { title: "Invoices", url: "/invoices", icon: DollarSign },
-    ],
-  },
-  {
-    label: "WORKSPACE",
+    label: "EXECUTION",
     items: [
       { title: "Projects", url: "/projects", icon: FolderKanban },
-      { title: "Tasks", url: "/tasks", icon: ListTodo },
-      { title: "Gmail", url: "/gmail", icon: Mail },
-      { title: "Assets", url: "/assets", icon: FolderOpen },
-    ],
-  },
-  {
-    label: "SYSTEM",
-    items: [
-      { title: "Settings", url: "/settings", icon: Settings },
+      { title: "Task Pipeline", url: "/tasks", icon: ListTodo },
+      { title: "Lead Engine", url: "/leads", icon: Users },
     ],
   },
 ];
@@ -100,35 +80,28 @@ export function AppSidebar() {
   const firstName = user?.user_metadata?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "Operator";
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0">
-      <SidebarHeader className={collapsed ? "px-2 py-3" : "px-4 py-4"}>
+    <Sidebar collapsible="icon" className="border-r border-slate-200/40 bg-white/40 backdrop-blur-xl">
+      <SidebarHeader className={collapsed ? "px-2 py-4" : "px-5 py-6"}>
         {collapsed ? (
           <div className="flex justify-center">
-            <ArdenoMark className="h-11 w-11 p-2.5" glow />
+            <ArdenoMark className="h-10 w-10 text-primary" />
           </div>
         ) : (
-          <div className="ardeno-panel cinematic-surface rounded-[24px] px-4 py-4">
-            <ArdenoStudioLockup className="w-full max-w-[172px]" />
-            <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
-              <div className="min-w-0">
-                <p className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground/90">Internal Agency OS</p>
-                <p className="mt-2 max-w-[11.5rem] text-[13px] leading-5 text-foreground/92">
-                  Premium operating layer for Ardeno Studio.
-                </p>
-              </div>
-              <ArdenoMark className="h-10 w-10 shrink-0 p-2.5" glow />
+          <div className="flex items-center gap-3 px-1">
+            <ArdenoMark className="h-9 w-9 text-primary" />
+            <div className="min-w-0">
+              <ArdenoStudioLockup className="w-32" />
+              <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">Sentient OS v4.0</p>
             </div>
           </div>
         )}
       </SidebarHeader>
 
-      <SidebarContent className={collapsed ? "px-1 pb-2" : "px-3 pb-3"}>
+      <SidebarContent className={collapsed ? "px-1 pb-4" : "px-4 pb-4"}>
         {navGroups.map((group) => (
-          <SidebarGroup key={group.label} className={collapsed ? "px-0 py-1" : "px-0 py-1"}>
-            {collapsed ? (
-              <div className="mx-auto my-2 h-px w-6 bg-white/10" />
-            ) : (
-              <p className="px-3 pb-2 pt-4 font-data text-[9px] font-medium uppercase tracking-[0.22em] text-muted-foreground/58">
+          <SidebarGroup key={group.label} className="px-0 py-2">
+            {!collapsed && (
+              <p className="px-3 pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400/70">
                 {group.label}
               </p>
             )}
@@ -143,40 +116,34 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className={collapsed ? "px-2 pb-3 pt-2" : "px-4 pb-4 pt-2"}>
-        {collapsed ? (
-          <motion.button
-            onClick={signOut}
-            className="shell-icon-button mx-auto flex h-11 w-11 items-center justify-center hover:border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
-            title="Sign Out"
-            {...buttonMotion}
-          >
-            <LogOut className="h-4 w-4" />
-          </motion.button>
-        ) : (
-          <div className="ardeno-panel cinematic-surface rounded-[22px] px-3.5 py-3.5">
-            <div className="mb-3 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-[13px] border border-white/10 bg-black/25 text-sm font-semibold text-foreground">
+      <SidebarFooter className={collapsed ? "px-2 pb-6" : "px-4 pb-6"}>
+        <div className={cn(
+          "rounded-2xl border border-slate-200/50 bg-white/40 p-3 shadow-sm transition-all",
+          collapsed ? "px-1.5" : "px-3"
+        )}>
+          {!collapsed && (
+            <div className="mb-3 flex items-center gap-3 border-b border-slate-100 pb-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-500">
                 {firstName[0]?.toUpperCase()}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-[13px] font-semibold leading-none text-foreground">{firstName}</p>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Founder Access</p>
+                <p className="truncate text-xs font-bold text-slate-900">{firstName}</p>
+                <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Founder</p>
               </div>
             </div>
-            <motion.button
-              onClick={signOut}
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "h-11 w-full justify-start rounded-[14px] px-3.5 text-[13px] text-muted-foreground hover:border-destructive/20 hover:bg-destructive/10 hover:text-destructive",
-              )}
-              {...buttonMotion}
-            >
-              <LogOut className="h-4 w-4 shrink-0" />
-              <span>Sign Out</span>
-            </motion.button>
-          </div>
-        )}
+          )}
+          <motion.button
+            onClick={signOut}
+            className={cn(
+              "flex h-9 w-full items-center gap-2 rounded-xl text-[12px] font-semibold text-slate-500 transition-all hover:bg-red-50 hover:text-red-500",
+              collapsed ? "justify-center" : "px-2.5"
+            )}
+            {...buttonMotion}
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>Sign Out</span>}
+          </motion.button>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
@@ -202,48 +169,21 @@ function SidebarNavItem({
           end={item.url === "/"}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          className={`group relative isolate flex items-center overflow-hidden rounded-[18px] border border-transparent bg-transparent text-sidebar-foreground transition-all duration-200 ${
-            collapsed ? "mx-auto h-12 w-12 justify-center" : "h-[50px] gap-3 px-3.5"
-          }`}
+          className={cn(
+            "group relative flex items-center rounded-xl transition-all duration-300",
+            collapsed ? "mx-auto h-11 w-11 justify-center" : "h-11 gap-3 px-3",
+            isActive 
+              ? "bg-primary/10 text-primary shadow-[0_4px_12px_-4px_rgba(0,122,255,0.2)]" 
+              : "text-slate-500 hover:bg-slate-100/60 hover:text-slate-900"
+          )}
         >
-          {isActive ? (
-            <motion.div
-              layoutId={collapsed ? "sidebar-active-pill-collapsed" : "sidebar-active-pill"}
-              transition={ardenoTransitions.base}
-              className="absolute inset-0 rounded-[18px] border border-primary/18 bg-[linear-gradient(180deg,rgba(255,79,0,0.16),rgba(255,79,0,0.08))] shadow-[0_16px_42px_-28px_rgba(255,79,0,0.78)]"
-            />
-          ) : null}
-          {isActive && !collapsed ? (
-            <motion.span
-              layoutId="sidebar-active-bar"
-              className="absolute left-[7px] top-1/2 h-7 w-[3px] -translate-y-1/2 rounded-full bg-primary"
-              transition={ardenoTransitions.base}
-            />
-          ) : null}
-          <motion.div
-            {...navItemMotion}
-            className={`relative z-[1] flex items-center justify-center rounded-[12px] transition-all duration-200 ${
-              collapsed ? "h-9 w-9" : "h-9 w-9"
-            } ${isActive ? "bg-primary/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" : "bg-white/[0.03] group-hover:bg-white/[0.05]"}`}
-          >
-            <NavIcon icon={item.icon} isActive={isActive} isHovered={hovered} />
-          </motion.div>
-          {!collapsed ? (
-            <div className="relative z-[1] flex min-w-0 flex-1 items-center justify-between gap-3">
-              <span className={`truncate text-[13px] font-medium leading-none text-inherit transition-transform duration-200 ${hovered && !isActive ? "translate-x-0.5" : ""}`}>
-                {item.title}
-              </span>
-              {isActive ? (
-                <motion.span
-                  layoutId="sidebar-active-dot"
-                  transition={ardenoTransitions.base}
-                  className="absolute right-3 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_4px_rgba(255,79,0,0.08)]"
-                />
-              ) : (
-                <span className="h-1.5 w-1.5 rounded-full bg-transparent transition-colors duration-200 group-hover:bg-white/15" />
-              )}
-            </div>
-          ) : null}
+          <item.icon className={cn(
+            "h-4.5 w-4.5 shrink-0 transition-transform duration-300",
+            isActive ? "" : "group-hover:scale-110"
+          )} />
+          {!collapsed && (
+            <span className="text-[13px] font-semibold leading-none">{item.title}</span>
+          )}
         </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
