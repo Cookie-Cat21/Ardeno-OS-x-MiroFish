@@ -16,23 +16,81 @@ const mockThoughts: Thought[] = [
   { id: "3", agentName: "Creative Director", content: "Designing minimalist glass interfaces for Ardeno OS", type: "acting", timestamp: new Date() },
 ];
 
+const MIROFISH_API = "http://localhost:5001"; // Default to local for bridging
+
 export default function ThoughtBubbleFeed() {
   const [thoughts, setThoughts] = useState<Thought[]>(mockThoughts);
+  const [activeSimId, setActiveSimId] = useState<string | null>(null);
+  const [isLive, setIsLive] = useState(false);
 
-  // Simulate incoming thoughts
+  // Initialize: Find latest simulation
   useEffect(() => {
+    const fetchLatestSim = async () => {
+      try {
+        const res = await fetch(`${MIROFISH_API}/api/simulation/list`);
+        const json = await res.json();
+        if (json.success && json.data.length > 0) {
+          // Sort by date and take latest
+          const latest = json.data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+          setActiveSimId(latest.simulation_id);
+        }
+      } catch (e) {
+        console.error("MiroFish Backend Standby (Simulation List):", e);
+      }
+    };
+    fetchLatestSim();
+  }, []);
+
+  // Poll for actions
+  useEffect(() => {
+    if (!activeSimId) return;
+
+    const pollActions = async () => {
+      try {
+        const res = await fetch(`${MIROFISH_API}/api/simulation/${activeSimId}/run-status/detail`);
+        const json = await res.json();
+        
+        if (json.success && json.data.recent_actions && json.data.recent_actions.length > 0) {
+          const newThoughts: Thought[] = json.data.recent_actions.map((act: any) => ({
+            id: act.timestamp + act.agent_id,
+            agentName: act.agent_name,
+            content: `${act.action_type}: ${JSON.stringify(act.action_args || {})}`.slice(0, 100) + "...",
+            type: act.action_type.includes("POST") ? "acting" : "thinking",
+            timestamp: new Date(act.timestamp)
+          }));
+          
+          setThoughts(newThoughts.slice(0, 5));
+          setIsLive(true);
+        } else {
+          setIsLive(false);
+        }
+      } catch (e) {
+        console.error("Sentient Stream Sync Error:", e);
+        setIsLive(false);
+      }
+    };
+
+    const interval = setInterval(pollActions, 3000);
+    pollActions(); // Initial burst
+    return () => clearInterval(interval);
+  }, [activeSimId]);
+
+  // Fallback simulation (Keep visual pulse if backend is idle)
+  useEffect(() => {
+    if (isLive) return; 
+
     const interval = setInterval(() => {
       const newThought: Thought = {
         id: Math.random().toString(),
-        agentName: "Society Agent",
-        content: "Processing simulation step #" + Math.floor(Math.random() * 1000),
-        type: Math.random() > 0.5 ? "thinking" : "acting",
+        agentName: "Parallel Logic",
+        content: "Idling simulation step #" + Math.floor(Math.random() * 1000) + " - Waiting for live stream...",
+        type: "thinking",
         timestamp: new Date(),
       };
       setThoughts(prev => [newThought, ...prev.slice(0, 4)]);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isLive]);
 
   return (
     <div className="arden-card h-full min-h-[400px] flex flex-col">
@@ -43,9 +101,13 @@ export default function ThoughtBubbleFeed() {
           </div>
           <h3 className="text-lg font-bold text-slate-900">Sentient Stream</h3>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-          Live
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-colors ${
+          isLive 
+            ? "bg-green-50 border-green-100 text-green-600" 
+            : "bg-amber-50 border-amber-100 text-amber-600"
+        }`}>
+          <span className={`h-1.5 w-1.5 rounded-full ${isLive ? "bg-green-500 animate-pulse" : "bg-amber-500"}`} />
+          {isLive ? "Live Stream" : "Simulation Standby"}
         </div>
       </div>
 
