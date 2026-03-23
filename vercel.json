@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd apps/os && npm install && npm run build",
+  "installCommand": "cd apps/os && npm install --legacy-peer-deps",
+  "buildCommand": "cd apps/os && npm run build",
   "outputDirectory": "apps/os/dist",
   "framework": null,
   "rewrites": [
