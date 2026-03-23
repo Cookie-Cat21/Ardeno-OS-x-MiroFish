@@ -35,18 +35,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { user, loading, isLocalDevBypass } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-primary text-sm">Loading...</div>
-      </div>
-    );
-  }
-
-  if (isLocalDevBypass) return <>{children}</>;
-  if (!user) return <Login />;
+  // Login bypassed based on user request ("let's not use a login for now")
   return <>{children}</>;
 }
 
